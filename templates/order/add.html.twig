@@ -1,27 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Valider ma commande - La boutique Algérienne{% endblock %}
+{% block title %}Paiement de ma commande - La boutique Algérienne{% endblock %}
+
+{% block javascript %}{% endblock %}
 
 {% block content %}
-    <h2>Je passe ma commande</h2>
-    <p>Choississez vos préférences avant de passer votre commadne sur La Boutique Algérienne.</p>
+    <h2>Mon récapitulatif</h2>
+    <p>Vérifiez vos information avant de payer votre commande.</p>
     <hr>
     <div class="row">
         <div class="col-md-6">
-            {% set formHtml %}
-                {{ form_start(form, {action:path('app_order_recap')}) }}
-                {{ form_end(form) }}
-            {% endset %}
-
-            {{ formHtml|replace({'[br]' : '<br/>'})|raw }}
+            <strong>Mon adresse de livraison</strong>
+            <br/>
+            <div class="form-check mt-4">
+                {{ delivery|raw }}
+            </div>
+            <hr>
+            <strong> Mon transporteur</strong> <br/>
+            <div class="form-check">
+                {{ carriers.name }} <br/>
+                {{ carriers.description }} <br/>
+                {{ (carriers.price / 100)|number_format(2, ',', '.') }} €
+            </div>
 
         </div>
         <div class="col-md-6">
             <div class="text-center">
-                <b>Récap de ma commande</b><br/>
-                <p>Retrouvez le récapitulatif de vos produits.</p>
+                <b>Ma commande</b><br/>
             </div>
             <div class="order-summary">
+                {% set total = null %}
+
                 {% for key,product in cart %}
                     <div class="row {% if key > 0 %}mt-2{% endif %}">
                         <div class="col-2">
@@ -30,15 +39,34 @@
                         </div>
                         <div class="col-8 my-auto">
                             {{ product.product.name }} <br/>
-                            <small>{{ product.product.subtitle }}</small>
+                            <small>
+                                {{ product.product.subtitle }}
+                                <br/>
+                                x {{ product.quantity }}
+                            </small>
                         </div>
                         <div class="col-2 my-auto">
-                            x {{ product.quantity }}
+                            {{ ((product.product.price * product.quantity) / 100)|number_format(2, ',', '.') }} €
                         </div>
                     </div>
+                    {% set total = total + (product.product.price * product.quantity) %}
+
                 {% endfor %}
             </div>
-            <b>Boutton pour payer</b>
+
+            <hr>
+
+            <strong>Sous-Total : </strong> {{ (total / 100)|number_format(2, ',', '.') }} € <br/>
+            <strong>Livraison : </strong> {{ (carriers.price / 100)|number_format(2, ',', '.') }} €
+
+            <hr>
+
+            <strong>Total : </strong> {{ ((total / 100) + (carriers.price / 100)) |number_format(2, ',', '.') }} €
+
+            <form action="/commande/create-session/{{ reference }}" method="POST">
+                <button class="btn btn-success btn-block mt-3" type="submit">Payer | {{ ((total / 100) + (carriers.price / 100)) |number_format(2, ',', '.') }} €</button>
+            </form>
+
         </div>
     </div>
 {% endblock %}

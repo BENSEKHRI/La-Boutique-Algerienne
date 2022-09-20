@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nous contacter - La Boutique Algérienne{% endblock %}
+
+{% block content %}
+    <h2>Nous contacter</h2>
+    <p>N'hésitez pas à prendre contact avec nos équipes, nous vos réponderons dans les plus meilleurs délais.</p>
+    <hr>
+    {% for message in app.flashes('notice') %}
+        <div class="alert alert-info text-center">{{ message }}</div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-8">{{ form(form) }}</div>
+        <div class="col-md-4">
+            <strong>La Boutique Algérienne</strong><br/>
+            0606060606<br/>
+            02 Avenue de Savigny, 93600 Aulnay-Sous-Bois<br/>
+            contact@laboutiquealgerienne.dz<br/>
+        </div>
+    </div>
+{% endblock %}

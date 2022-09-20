@@ -1,21 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nos produits - La boutique Algérienne{% endblock %}
+{% block title %}{{ product.name }} - La boutique Algérienne{% endblock %}
 
 {% block content %}
-    <h1>Nos produits</h1>
-
-    <div class="row product-container">
-        {% for product in products %}
-            <div class="col-md-4">
-                <div class="product-item text-center">
-                    <img src="/uploads/{{ product.illustration }}" alt="{{ product.name }}" class="img-fluid">
-                    <h5>{{ product.name }}</h5>
-                    <span class="product-subtitle">{{ product.subtitle }}</span>
-                    <span class="product-price">{{ (product.price / 100)|number_format(2, ',', '.') }} €</span>
-                </div>
+    <div class="row">
+        <div class="col-md-5">
+            <img src="/uploads/{{ product.illustration }}" alt="{{ product.name }}" class="img-fluid"></a>
+        </div>
+        <div class="col-md-7 my-auto">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.subtitle }}</p>
+            <span class="product-page-price">{{ (product.price / 100)|number_format(2, ',', '.') }} €</span>
+            <hr>
+            <p>
+                {{ product.description }}
+            </p>
+            <a href="{{ path('app_add_to_cart', {'id' : product.id}) }}" class="btn btn-primary">Ajouter au panier</a>
+        </div>
+    </div>
+    <hr>
+    <!-- Three columns of text below the carousel -->
+    <h3>Nos meilleures ventes</h3>
+    <p>Découvrez les articles les plus vendus.</p>
+    <div class="row">
+        {% for product in best_product %}
+            <div class="col-md-3">
+                {% include 'product/single_product.html.twig' %}
             </div>
         {% endfor %}
-    </div>
+    </div><!-- /.row -->
 
 {% endblock %}
